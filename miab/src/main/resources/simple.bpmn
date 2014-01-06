@@ -15,9 +15,6 @@
     <bpmn2:extensionElements>
       <tns:import name="miab.travel.booking.ServiceTaskImpl"/>
     </bpmn2:extensionElements>
-    <bpmn2:startEvent id="_1" name="START">
-      <bpmn2:outgoing>SequenceFlow_6</bpmn2:outgoing>
-    </bpmn2:startEvent>
     <bpmn2:serviceTask id="ServiceTask_2" name="Service Task 2" operationRef="_Operation_125">
       <bpmn2:extensionElements>
         <tns:onEntry-script scriptFormat="http://www.java.com/java">
@@ -40,10 +37,6 @@
         </bpmn2:outputSet>
       </bpmn2:ioSpecification>
     </bpmn2:serviceTask>
-    <bpmn2:sequenceFlow id="SequenceFlow_6" tns:priority="1" name="" sourceRef="_1" targetRef="ServiceTask_2"/>
-    <bpmn2:endEvent id="EndEvent_3" name="END">
-      <bpmn2:incoming>SequenceFlow_8</bpmn2:incoming>
-    </bpmn2:endEvent>
     <bpmn2:sequenceFlow id="SequenceFlow_8" tns:priority="1" name="" sourceRef="ServiceTask_2" targetRef="EndEvent_3"/>
     <bpmn2:boundaryEvent id="BoundaryEvent_1" name="" attachedToRef="ServiceTask_2">
       <bpmn2:outgoing>SequenceFlow_9</bpmn2:outgoing>
@@ -56,7 +49,7 @@
       </bpmn2:outputSet>
       <bpmn2:errorEventDefinition id="ErrorEventDefinition_1" errorRef="Error_1"/>
     </bpmn2:boundaryEvent>
-    <bpmn2:endEvent id="EndEvent_4" name="ERROR">
+    <bpmn2:endEvent id="EndEvent_4" name="ERROR SUBPROCESS">
       <bpmn2:incoming>SequenceFlow_9</bpmn2:incoming>
       <bpmn2:dataInput id="DataInput_4" name="Error_2_Input"/>
       <bpmn2:dataInputAssociation id="DataInputAssociation_2">
@@ -68,17 +61,24 @@
       <bpmn2:errorEventDefinition id="ErrorEventDefinition_2" errorRef="Error_1"/>
     </bpmn2:endEvent>
     <bpmn2:sequenceFlow id="SequenceFlow_9" tns:priority="1" sourceRef="BoundaryEvent_1" targetRef="EndEvent_4"/>
+    <bpmn2:startEvent id="_1" name="START SUBPROCESS">
+      <bpmn2:outgoing>SequenceFlow_6</bpmn2:outgoing>
+    </bpmn2:startEvent>
+    <bpmn2:sequenceFlow id="SequenceFlow_6" tns:priority="1" name="" sourceRef="_1" targetRef="ServiceTask_2"/>
+    <bpmn2:endEvent id="EndEvent_3" name="END SUBPROCESS">
+      <bpmn2:incoming>SequenceFlow_8</bpmn2:incoming>
+    </bpmn2:endEvent>
   </bpmn2:process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_Process_1" bpmnElement="com.sample.bpmn">
       <bpmndi:BPMNShape id="BPMNShape_StartEvent_1" bpmnElement="_1">
-        <dc:Bounds height="36.0" width="36.0" x="45.0" y="45.0"/>
+        <dc:Bounds height="36.0" width="36.0" x="45.0" y="52.0"/>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="BPMNShape_ServiceTask_2" bpmnElement="ServiceTask_2">
         <dc:Bounds height="50.0" width="110.0" x="145.0" y="45.0"/>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="BPMNShape_EndEvent_3" bpmnElement="EndEvent_3">
-        <dc:Bounds height="36.0" width="36.0" x="316.0" y="53.0"/>
+        <dc:Bounds height="36.0" width="36.0" x="316.0" y="52.0"/>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="BPMNShape_BoundaryEvent_1" bpmnElement="BoundaryEvent_1">
         <dc:Bounds height="36.0" width="36.0" x="197.0" y="67.0"/>
@@ -87,16 +87,16 @@
         <dc:Bounds height="36.0" width="36.0" x="301.0" y="167.0"/>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_6" bpmnElement="SequenceFlow_6" sourceElement="BPMNShape_StartEvent_1" targetElement="BPMNShape_ServiceTask_2">
-        <di:waypoint xsi:type="dc:Point" x="81.0" y="63.0"/>
-        <di:waypoint xsi:type="dc:Point" x="109.0" y="63.0"/>
+        <di:waypoint xsi:type="dc:Point" x="81.0" y="70.0"/>
+        <di:waypoint xsi:type="dc:Point" x="109.0" y="70.0"/>
         <di:waypoint xsi:type="dc:Point" x="109.0" y="70.0"/>
         <di:waypoint xsi:type="dc:Point" x="145.0" y="70.0"/>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_8" bpmnElement="SequenceFlow_8" sourceElement="BPMNShape_ServiceTask_2" targetElement="BPMNShape_EndEvent_3">
         <di:waypoint xsi:type="dc:Point" x="255.0" y="70.0"/>
         <di:waypoint xsi:type="dc:Point" x="282.0" y="70.0"/>
-        <di:waypoint xsi:type="dc:Point" x="282.0" y="71.0"/>
-        <di:waypoint xsi:type="dc:Point" x="316.0" y="71.0"/>
+        <di:waypoint xsi:type="dc:Point" x="282.0" y="70.0"/>
+        <di:waypoint xsi:type="dc:Point" x="316.0" y="70.0"/>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_9" bpmnElement="SequenceFlow_9" sourceElement="BPMNShape_BoundaryEvent_1" targetElement="BPMNShape_EndEvent_4">
         <di:waypoint xsi:type="dc:Point" x="215.0" y="103.0"/>
