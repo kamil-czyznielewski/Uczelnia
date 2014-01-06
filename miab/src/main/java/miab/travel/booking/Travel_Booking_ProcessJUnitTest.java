@@ -69,7 +69,7 @@ public class Travel_Booking_ProcessJUnitTest extends JbpmJUnitBaseTestCase {
 		RuntimeManager manager = createRuntimeManager(Strategy.SINGLETON, resources, builder.get(), null);
 		RuntimeEngine engine = getRuntimeEngine(null);
 		KieSession ksession = engine.getKieSession();
-		KieRuntimeLogger log = KieServices.Factory.get().getLoggers().newThreadedFileLogger(ksession, "test", 1000);
+//		KieRuntimeLogger log = KieServices.Factory.get().getLoggers().newThreadedFileLogger(ksession, "test", 1000);
 		ksession.getWorkItemManager().registerWorkItemHandler("Service Task", new org.jbpm.bpmn2.handler.ServiceTaskHandler());
 		TaskService taskService = engine.getTaskService();
 		
@@ -162,7 +162,7 @@ public class Travel_Booking_ProcessJUnitTest extends JbpmJUnitBaseTestCase {
         
         assertProcessInstanceCompleted(processInstance.getId(), ksession);
         
-        log.close();
+//        log.close();
 		manager.disposeRuntimeEngine(engine);
 		manager.close();
     }
