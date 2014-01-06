@@ -167,7 +167,7 @@ public class Travel_Booking_ProcessJUnitTest extends JbpmJUnitBaseTestCase {
 		taskService.complete(task.getId(), "Kamil", results);
 
         assertNodeTriggered(processInstance.getId(), "Approval Task");
-        Thread.sleep(5000);
+//        Thread.sleep(5000);
         tasks = taskService.getTasksAssignedAsPotentialOwner("Piotr", "en-UK");
 		assertEquals(1, tasks.size());
 		task = tasks.get(0);

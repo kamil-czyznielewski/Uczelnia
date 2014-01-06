@@ -37,7 +37,7 @@
       <bpmn2:outgoing>SequenceFlow_42</bpmn2:outgoing>
       <bpmn2:script>System.out.println(variable.logger.toString());</bpmn2:script>
     </bpmn2:scriptTask>
-    <bpmn2:serviceTask id="ServiceTask_1" name="checkCreditCard" operationRef="_Operation_124">
+    <bpmn2:serviceTask id="ServiceTask_1" name="Check Credit Card" operationRef="_Operation_124">
       <bpmn2:extensionElements>
         <tns:onEntry-script scriptFormat="http://www.java.com/java">
           <tns:script>System.out.println(&quot;checkCreditCard - START&quot;);</tns:script>
@@ -197,7 +197,7 @@
       <bpmn2:outgoing>SequenceFlow_17</bpmn2:outgoing>
     </bpmn2:inclusiveGateway>
     <bpmn2:sequenceFlow id="SequenceFlow_17" tns:priority="1" name="" sourceRef="InclusiveGateway_1" targetRef="ScriptTask_4"/>
-    <bpmn2:exclusiveGateway id="ExclusiveGateway_1" name="Credit Card validation" gatewayDirection="Diverging" default="SequenceFlow_8">
+    <bpmn2:exclusiveGateway id="ExclusiveGateway_1" name="CREDIT CARD VALIDATION" gatewayDirection="Diverging" default="SequenceFlow_8">
       <bpmn2:incoming>SequenceFlow_15</bpmn2:incoming>
       <bpmn2:outgoing>SequenceFlow_8</bpmn2:outgoing>
       <bpmn2:outgoing>SequenceFlow_11</bpmn2:outgoing>
