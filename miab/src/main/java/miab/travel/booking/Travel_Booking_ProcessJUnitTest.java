@@ -13,6 +13,8 @@ import org.jbpm.process.instance.impl.DefaultProcessInstanceManagerFactory;
 import org.jbpm.runtime.manager.impl.RuntimeEnvironmentBuilder;
 import org.jbpm.services.task.identity.JBossUserGroupCallbackImpl;
 import org.jbpm.test.JbpmJUnitBaseTestCase;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 import org.kie.api.KieServices;
 import org.kie.api.event.process.ProcessCompletedEvent;
@@ -37,9 +39,13 @@ import org.kie.internal.task.api.UserGroupCallback;
 
 public class Travel_Booking_ProcessJUnitTest extends JbpmJUnitBaseTestCase {
 
-	@Test
+	private RuntimeManager manager;
+	private RuntimeEngine engine;
+	private KieSession ksession;
+	
+	@Before
 	@SuppressWarnings("restriction")
-    public void testProcess() throws Exception {
+	public void setUpTest() {
 		Map<String, ResourceType> resources = new HashMap<String, ResourceType>();
 		for (String p : new String[]{"travel.bpmn", "simple.bpmn"}) {
            resources.put(p, ResourceType.BPMN2);
@@ -50,8 +56,7 @@ public class Travel_Booking_ProcessJUnitTest extends JbpmJUnitBaseTestCase {
             .addConfiguration("drools.processSignalManagerFactory", DefaultSignalManagerFactory.class.getName())
             .addConfiguration("drools.processInstanceManagerFactory", DefaultProcessInstanceManagerFactory.class.getName());
         } else if (sessionPersistence) {
-            builder = RuntimeEnvironmentBuilder.getDefault()
-            .entityManagerFactory(getEmf());
+            builder = RuntimeEnvironmentBuilder.getDefault().entityManagerFactory(getEmf());
         } else {
             builder = RuntimeEnvironmentBuilder.getDefaultInMemory();       
         }
@@ -66,14 +71,26 @@ public class Travel_Booking_ProcessJUnitTest extends JbpmJUnitBaseTestCase {
             builder.addAsset(ResourceFactory.newClassPathResource(entry.getKey()), entry.getValue());
         }
 //		RuntimeManager manager = createRuntimeManager(new String[]{"travel.bpmn", "simple.bpmn"});
-		RuntimeManager manager = createRuntimeManager(Strategy.SINGLETON, resources, builder.get(), null);
-		RuntimeEngine engine = getRuntimeEngine(null);
-		KieSession ksession = engine.getKieSession();
-//		KieRuntimeLogger log = KieServices.Factory.get().getLoggers().newThreadedFileLogger(ksession, "test", 1000);
-		ksession.getWorkItemManager().registerWorkItemHandler("Service Task", new org.jbpm.bpmn2.handler.ServiceTaskHandler());
-		TaskService taskService = engine.getTaskService();
+		this.manager = createRuntimeManager(Strategy.SINGLETON, resources, builder.get(), null);
+		this.engine = getRuntimeEngine(null);
+		this.ksession = engine.getKieSession();
+	}
+	
+	@After
+	public void disposeTest() {
+        this.manager.disposeRuntimeEngine(this.engine);
+        this.manager.close();
+	}
+	
+	
+	
+	@Test
+	@SuppressWarnings("restriction")
+    public void testProcess() throws Exception {
+		this.ksession.getWorkItemManager().registerWorkItemHandler("Service Task", new org.jbpm.bpmn2.handler.ServiceTaskHandler());
+		TaskService taskService = this.engine.getTaskService();
 		
-		ksession.addEventListener(new ProcessEventListener() {
+		this.ksession.addEventListener(new ProcessEventListener() {
 			
 			@Override
 			public void beforeVariableChanged(ProcessVariableChangedEvent arg0) {
@@ -138,7 +155,7 @@ public class Travel_Booking_ProcessJUnitTest extends JbpmJUnitBaseTestCase {
 			Variable v = new Variable();
 	        v.vars.put("credit_card", new CreditCard("Czyżnielewski Kamil", 1230, "MasterCard"));
         params.put("variable", v);
-        ProcessInstance processInstance = ksession.startProcess("miab.travel.booking", params);
+        ProcessInstance processInstance = this.ksession.startProcess("miab.travel.booking", params);
         
         assertNodeTriggered(processInstance.getId(), "Request Task");
         List<TaskSummary> tasks = taskService.getTasksAssignedAsPotentialOwner("Kamil", "en-UK");
@@ -160,11 +177,7 @@ public class Travel_Booking_ProcessJUnitTest extends JbpmJUnitBaseTestCase {
 		taskService.complete(task.getId(), "Piotr", results);
 		
         
-        assertProcessInstanceCompleted(processInstance.getId(), ksession);
-        
-//        log.close();
-		manager.disposeRuntimeEngine(engine);
-		manager.close();
+        assertProcessInstanceCompleted(processInstance.getId(), this.ksession);
     }
 	
 	public Travel_Booking_ProcessJUnitTest() {
