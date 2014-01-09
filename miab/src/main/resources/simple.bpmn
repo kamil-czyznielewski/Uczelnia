@@ -2,20 +2,22 @@
 <bpmn2:definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bpmn2="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:tns="http://www.jboss.org/drools" xmlns="http://www.jboss.org/drools" xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd http://www.jboss.org/drools drools.xsd http://www.bpsim.org/schemas/1.0 bpsim.xsd" id="Definition" expressionLanguage="http://www.mvel.org/2.0" targetNamespace="http://www.jboss.org/drools" typeLanguage="http://www.java.com/javaTypes">
   <bpmn2:itemDefinition id="_ItemDefinition_8261" structureRef="miab.travel.booking.ServiceTaskImpl"/>
   <bpmn2:itemDefinition id="ItemDefinition_1" structureRef="java.lang.String"/>
+  <bpmn2:itemDefinition id="ItemDefinition_2" structureRef="miab.travel.booking.pojos.Variable"/>
   <bpmn2:error id="Error_1" errorCode="org.jbpm.bpmn2.handler.WorkItemHandlerRuntimeException" name="org.jbpm.bpmn2.handler.WorkItemHandlerRuntimeException"/>
-  <bpmn2:message id="Message1" itemRef="ItemDefinition_1" name="Message1"/>
-  <bpmn2:message id="Message2" itemRef="ItemDefinition_1" name="Message2"/>
+  <bpmn2:message id="in_carReservation" itemRef="ItemDefinition_2" name="in_carReservation"/>
+  <bpmn2:message id="out_carReservation" itemRef="ItemDefinition_2" name="out_carReservation"/>
   <bpmn2:interface id="Interface_1" implementationRef="miab.travel.booking.ServiceTaskImpl" name="miab.travel.booking.ServiceTaskImpl">
-    <bpmn2:operation id="_Operation_125" name="throwError">
-      <bpmn2:inMessageRef>Message1</bpmn2:inMessageRef>
-      <bpmn2:outMessageRef>Message2</bpmn2:outMessageRef>
+    <bpmn2:operation id="_Operation_126" name="carReservation">
+      <bpmn2:inMessageRef>in_carReservation</bpmn2:inMessageRef>
+      <bpmn2:outMessageRef>out_carReservation</bpmn2:outMessageRef>
     </bpmn2:operation>
   </bpmn2:interface>
   <bpmn2:process id="com.sample.bpmn" tns:version="1" tns:packageName="defaultPackage" tns:adHoc="false" name="Sample Process" isExecutable="true" processType="Private">
     <bpmn2:extensionElements>
       <tns:import name="miab.travel.booking.ServiceTaskImpl"/>
     </bpmn2:extensionElements>
-    <bpmn2:serviceTask id="ServiceTask_2" name="Service Task 2" operationRef="_Operation_125">
+    <bpmn2:property id="var" itemSubjectRef="ItemDefinition_2"/>
+    <bpmn2:serviceTask id="ServiceTask_2" name="Car Reservation Task" operationRef="_Operation_126">
       <bpmn2:extensionElements>
         <tns:onEntry-script scriptFormat="http://www.java.com/java">
           <tns:script></tns:script>
@@ -26,20 +28,28 @@
       </bpmn2:extensionElements>
       <bpmn2:incoming>SequenceFlow_6</bpmn2:incoming>
       <bpmn2:outgoing>SequenceFlow_8</bpmn2:outgoing>
-      <bpmn2:ioSpecification id="InputOutputSpecification_4">
-        <bpmn2:dataInput id="DataInput_3" itemSubjectRef="ItemDefinition_1" name="Data Input 3"/>
-        <bpmn2:dataOutput id="DataOutput_1" itemSubjectRef="ItemDefinition_1" name="Data Output 1"/>
-        <bpmn2:inputSet id="InputSet_3" name="Input Set 3">
-          <bpmn2:dataInputRefs>DataInput_3</bpmn2:dataInputRefs>
+      <bpmn2:ioSpecification id="InputOutputSpecification_6">
+        <bpmn2:dataInput id="DataInput_7" itemSubjectRef="ItemDefinition_2" name="Parameter"/>
+        <bpmn2:dataOutput id="DataOutput_5" itemSubjectRef="ItemDefinition_2" name="Result"/>
+        <bpmn2:inputSet id="_InputSet_26" name="Input Set 26">
+          <bpmn2:dataInputRefs>DataInput_7</bpmn2:dataInputRefs>
         </bpmn2:inputSet>
-        <bpmn2:outputSet id="OutputSet_3" name="Output Set 3">
-          <bpmn2:dataOutputRefs>DataOutput_1</bpmn2:dataOutputRefs>
+        <bpmn2:outputSet id="OutputSet_5" name="Output Set 5">
+          <bpmn2:dataOutputRefs>DataOutput_5</bpmn2:dataOutputRefs>
         </bpmn2:outputSet>
       </bpmn2:ioSpecification>
+      <bpmn2:dataInputAssociation id="DataInputAssociation_5">
+        <bpmn2:sourceRef>var</bpmn2:sourceRef>
+        <bpmn2:targetRef>DataInput_7</bpmn2:targetRef>
+      </bpmn2:dataInputAssociation>
+      <bpmn2:dataOutputAssociation id="DataOutputAssociation_5">
+        <bpmn2:sourceRef>DataOutput_5</bpmn2:sourceRef>
+        <bpmn2:targetRef>var</bpmn2:targetRef>
+      </bpmn2:dataOutputAssociation>
     </bpmn2:serviceTask>
     <bpmn2:sequenceFlow id="SequenceFlow_8" tns:priority="1" name="" sourceRef="ServiceTask_2" targetRef="EndEvent_3"/>
     <bpmn2:boundaryEvent id="BoundaryEvent_1" name="" attachedToRef="ServiceTask_2">
-      <bpmn2:outgoing>SequenceFlow_9</bpmn2:outgoing>
+      <bpmn2:outgoing>SequenceFlow_10</bpmn2:outgoing>
       <bpmn2:dataOutput id="DataOutput_2" name="Error_1_Output"/>
       <bpmn2:dataOutputAssociation id="DataOutputAssociation_2">
         <bpmn2:sourceRef>DataOutput_2</bpmn2:sourceRef>
@@ -49,24 +59,22 @@
       </bpmn2:outputSet>
       <bpmn2:errorEventDefinition id="ErrorEventDefinition_1" errorRef="Error_1"/>
     </bpmn2:boundaryEvent>
-    <bpmn2:endEvent id="EndEvent_4" name="ERROR SUBPROCESS">
-      <bpmn2:incoming>SequenceFlow_9</bpmn2:incoming>
-      <bpmn2:dataInput id="DataInput_4" name="Error_2_Input"/>
-      <bpmn2:dataInputAssociation id="DataInputAssociation_2">
-        <bpmn2:targetRef>DataInput_4</bpmn2:targetRef>
-      </bpmn2:dataInputAssociation>
-      <bpmn2:inputSet id="InputSet_4" name="Input Set 4">
-        <bpmn2:dataInputRefs>DataInput_4</bpmn2:dataInputRefs>
-      </bpmn2:inputSet>
-      <bpmn2:errorEventDefinition id="ErrorEventDefinition_2" errorRef="Error_1"/>
-    </bpmn2:endEvent>
-    <bpmn2:sequenceFlow id="SequenceFlow_9" tns:priority="1" sourceRef="BoundaryEvent_1" targetRef="EndEvent_4"/>
     <bpmn2:startEvent id="_1" name="START SUBPROCESS">
       <bpmn2:outgoing>SequenceFlow_6</bpmn2:outgoing>
     </bpmn2:startEvent>
     <bpmn2:sequenceFlow id="SequenceFlow_6" tns:priority="1" name="" sourceRef="_1" targetRef="ServiceTask_2"/>
     <bpmn2:endEvent id="EndEvent_3" name="END SUBPROCESS">
       <bpmn2:incoming>SequenceFlow_8</bpmn2:incoming>
+    </bpmn2:endEvent>
+    <bpmn2:sequenceFlow id="SequenceFlow_10" tns:priority="1" name="" sourceRef="BoundaryEvent_1" targetRef="ScriptTask_2"/>
+    <bpmn2:scriptTask id="ScriptTask_2" name="Script Task 2" scriptFormat="http://www.java.com/java">
+      <bpmn2:incoming>SequenceFlow_10</bpmn2:incoming>
+      <bpmn2:outgoing>SequenceFlow_11</bpmn2:outgoing>
+      <bpmn2:script>System.out.println(var.logger.toString());</bpmn2:script>
+    </bpmn2:scriptTask>
+    <bpmn2:sequenceFlow id="SequenceFlow_11" tns:priority="1" name="" sourceRef="ScriptTask_2" targetRef="EndEvent_5"/>
+    <bpmn2:endEvent id="EndEvent_5" name="ERROR END SUBPROCESS">
+      <bpmn2:incoming>SequenceFlow_11</bpmn2:incoming>
     </bpmn2:endEvent>
   </bpmn2:process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
@@ -75,16 +83,19 @@
         <dc:Bounds height="36.0" width="36.0" x="45.0" y="52.0"/>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="BPMNShape_ServiceTask_2" bpmnElement="ServiceTask_2">
-        <dc:Bounds height="50.0" width="110.0" x="145.0" y="45.0"/>
+        <dc:Bounds height="50.0" width="157.0" x="145.0" y="45.0"/>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="BPMNShape_EndEvent_3" bpmnElement="EndEvent_3">
-        <dc:Bounds height="36.0" width="36.0" x="316.0" y="52.0"/>
+        <dc:Bounds height="36.0" width="36.0" x="370.0" y="52.0"/>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="BPMNShape_BoundaryEvent_1" bpmnElement="BoundaryEvent_1">
-        <dc:Bounds height="36.0" width="36.0" x="197.0" y="67.0"/>
+        <dc:Bounds height="36.0" width="36.0" x="197.0" y="77.0"/>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="BPMNShape_EndEvent_4" bpmnElement="EndEvent_4">
-        <dc:Bounds height="36.0" width="36.0" x="301.0" y="167.0"/>
+      <bpmndi:BPMNShape id="BPMNShape_ScriptTask_2" bpmnElement="ScriptTask_2">
+        <dc:Bounds height="50.0" width="110.0" x="160.0" y="179.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_EndEvent_5" bpmnElement="EndEvent_5">
+        <dc:Bounds height="36.0" width="36.0" x="370.0" y="186.0"/>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_6" bpmnElement="SequenceFlow_6" sourceElement="BPMNShape_StartEvent_1" targetElement="BPMNShape_ServiceTask_2">
         <di:waypoint xsi:type="dc:Point" x="81.0" y="70.0"/>
@@ -93,15 +104,22 @@
         <di:waypoint xsi:type="dc:Point" x="145.0" y="70.0"/>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_8" bpmnElement="SequenceFlow_8" sourceElement="BPMNShape_ServiceTask_2" targetElement="BPMNShape_EndEvent_3">
-        <di:waypoint xsi:type="dc:Point" x="255.0" y="70.0"/>
-        <di:waypoint xsi:type="dc:Point" x="282.0" y="70.0"/>
-        <di:waypoint xsi:type="dc:Point" x="282.0" y="70.0"/>
-        <di:waypoint xsi:type="dc:Point" x="316.0" y="70.0"/>
+        <di:waypoint xsi:type="dc:Point" x="302.0" y="70.0"/>
+        <di:waypoint xsi:type="dc:Point" x="332.0" y="70.0"/>
+        <di:waypoint xsi:type="dc:Point" x="332.0" y="70.0"/>
+        <di:waypoint xsi:type="dc:Point" x="370.0" y="70.0"/>
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_9" bpmnElement="SequenceFlow_9" sourceElement="BPMNShape_BoundaryEvent_1" targetElement="BPMNShape_EndEvent_4">
-        <di:waypoint xsi:type="dc:Point" x="215.0" y="103.0"/>
-        <di:waypoint xsi:type="dc:Point" x="215.0" y="185.0"/>
-        <di:waypoint xsi:type="dc:Point" x="301.0" y="185.0"/>
+      <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_10" bpmnElement="SequenceFlow_10" sourceElement="BPMNShape_BoundaryEvent_1" targetElement="BPMNShape_ScriptTask_2">
+        <di:waypoint xsi:type="dc:Point" x="215.0" y="113.0"/>
+        <di:waypoint xsi:type="dc:Point" x="215.0" y="142.0"/>
+        <di:waypoint xsi:type="dc:Point" x="215.0" y="142.0"/>
+        <di:waypoint xsi:type="dc:Point" x="215.0" y="179.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_11" bpmnElement="SequenceFlow_11" sourceElement="BPMNShape_ScriptTask_2" targetElement="BPMNShape_EndEvent_5">
+        <di:waypoint xsi:type="dc:Point" x="270.0" y="204.0"/>
+        <di:waypoint xsi:type="dc:Point" x="315.0" y="204.0"/>
+        <di:waypoint xsi:type="dc:Point" x="315.0" y="204.0"/>
+        <di:waypoint xsi:type="dc:Point" x="370.0" y="204.0"/>
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>

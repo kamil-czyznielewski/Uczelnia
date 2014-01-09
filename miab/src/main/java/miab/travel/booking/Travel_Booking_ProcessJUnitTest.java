@@ -112,12 +112,14 @@ public class Travel_Booking_ProcessJUnitTest extends JbpmJUnitBaseTestCase {
 			
 			@Override
 			public void beforeNodeTriggered(ProcessNodeTriggeredEvent arg0) {
-				System.out.println("\t NODE TRIGGERED : " + arg0.getNodeInstance().getNodeName());
+				System.out.println("---------------------------------------");
+				System.out.println("NODE TRIGGERED : " + arg0.getNodeInstance().getNodeName());
 			}
 			
 			@Override
 			public void beforeNodeLeft(ProcessNodeLeftEvent arg0) {
-				System.out.println("\t NODE LEFT : " + arg0.getNodeInstance().getNodeName());
+				System.out.println("NODE LEFT : " + arg0.getNodeInstance().getNodeName());
+				System.out.println("---------------------------------------");
 				
 			}
 			
@@ -154,24 +156,29 @@ public class Travel_Booking_ProcessJUnitTest extends JbpmJUnitBaseTestCase {
         // initialize variables here if necessary
 			Variable v = new Variable();
 	        v.vars.put("credit_card", new CreditCard("Czyżnielewski Kamil", 1230, "MasterCard"));
+	        v.vars.put("tour", "Bahama");
+	        v.vars.put("isHotel", true);
+	        v.vars.put("isCar", true);
+	        v.vars.put("isFlight", false);
         params.put("variable", v);
         ProcessInstance processInstance = this.ksession.startProcess("miab.travel.booking", params);
         
         assertNodeTriggered(processInstance.getId(), "Request Task");
+//      Thread.sleep(5000);
         List<TaskSummary> tasks = taskService.getTasksAssignedAsPotentialOwner("Kamil", "en-UK");
 		assertEquals(1, tasks.size());
 		TaskSummary task = tasks.get(0);
-		System.out.println("'Kamil' completing task " + task.getName() + ": " + task.getDescription());
+		System.out.println("\t 'Kamil' completing task " + task.getName() + ": " + task.getDescription());
 		taskService.start(task.getId(), "Kamil");
 		Map<String, Object> results = new HashMap<String, Object>();
+		
 		taskService.complete(task.getId(), "Kamil", results);
 
         assertNodeTriggered(processInstance.getId(), "Approval Task");
-//        Thread.sleep(5000);
         tasks = taskService.getTasksAssignedAsPotentialOwner("Piotr", "en-UK");
 		assertEquals(1, tasks.size());
 		task = tasks.get(0);
-		System.out.println("'Piotr' completing task " + task.getName() + ": " + task.getDescription());
+		System.out.println("\t 'Piotr' completing task " + task.getName() + ": " + task.getDescription());
 		taskService.start(task.getId(), "Piotr");
 		results = new HashMap<String, Object>();
 		taskService.complete(task.getId(), "Piotr", results);

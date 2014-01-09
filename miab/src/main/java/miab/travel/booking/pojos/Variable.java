@@ -14,4 +14,9 @@ public class Variable implements Serializable {
 		this.vars = new HashMap<String, Object>();
 		this.logger = new StringBuilder();
 	}
+	
+	public boolean getBooleanValue(String key) {
+		Boolean b = (Boolean)vars.get(key);
+		return b.booleanValue();
+	}
 }
